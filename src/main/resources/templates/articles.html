@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:include="header :: head"></div>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<div th:include="header :: navbar"></div>
+
+<div class="container">
+    <div class="index-block bg-transparent py-4">
+        <h2 class="h2 p-3" th:text="${title}"></h2>
+    </div>
+    <p class="p-3 bg-light" th:text="${description}"></p>
+    <div class="d-flex">
+        <div class="d-flex" sec:authorize="isAuthenticated()">
+            <label class="mt-1">My Tags: </label>
+            <div class="tag-box" th:each="tag,i: ${tags}">
+                <form th:action="@{/articles/__${tag.tagName}__}" method="get">
+                    <label>
+                        <input type="submit" class="tablinks mx-2" name="tags">
+                        <span th:text="${tag.tagName}+'  &#10005;'"></span>
+                    </label>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="col" th:text="${errorField}" th:classappend="${class}" th:style="${style}"></div>
+            <div th:fragment="article">
+                <th:block th:each="article, iStat : ${articlePage.content}">
+                    <div class="bg-white m-5 p-5 rounded">
+                        <h5 class="font-weight-bold" th:text="${article.title}"></h5>
+                        <div class="d-flex">
+                            <img style="width: 20rem;" class="pt-1" th:src="${article.urlToImage}">
+                            <div class="paragraph-section">
+                                <p class="p-1" th:text="${article.description}">
+                                </p>
+                                <a class="article-page-link rounded" th:href="${article.url}" target="_blank">Read more..</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </th:block>
+                <nav class="position-absolute pagination-center">
+                    <ul th:if="${articlePage.totalPages > 0}" class="pagination">
+                        <li th:each="pageNumber : ${pageNumbers}" class="page-item"> <a th:href="@{?(size=${articlePage.size}, page=${pageNumber})}"
+                                                                                        th:text="${pageNumber}"
+                                                                                        class="page-link" th:classappend="${pageNumber==articlePage.number + 1} ? active"></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div th:include="footer :: scripts"></div>
+</body>
+</html>

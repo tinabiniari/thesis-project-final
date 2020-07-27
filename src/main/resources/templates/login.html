@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="login-form">
+            <form th:action="@{/login}" method="POST" class="login-form text-center border-none p-5">
+                <h2 class="h2 mb-4" th:text="Login"></h2>
+                <br/>
+                <div class="p-4 bg-white box-shadow">
+                <input type="text" id="email" name="email"  th:placeholder="Email"
+                       class="login-input form-control border-top-0 border-left-0 border-right-0 border-bottom rounded-0" /> <br/>
+                <input type="password"  th:placeholder="Password"
+                       id="password" name="password" class="login-input form-control border-top-0 border-left-0 border-right-0 border-bottom rounded-0" /> <br />
+                <div align="center" th:if="${param.error}">
+                    <p class="d-flex text-12 text-non-valid">Email or Password invalid, please verify</p>
+                </div>
+                <button class="btn btn-block btn-register bg-black rounded-0 text-light mt-2" name="Submit" value="Login" type="Submit" th:text="Login"></button>
+                </div>
+            </form>
+            <form th:action="@{/register}" method="get">
+                <p class="register-link text-12 text-grey">Not a member?
+                    <button class="btn align-baseline text-12 pl-0 pt-3" type="Submit"><u>Register</u></button></p>
+            </form>
+    </div>
+
+</body>
+</html>

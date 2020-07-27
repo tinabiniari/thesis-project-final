@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="login-form">
+    <form th:action="@{/login}" id="login" method="POST" class="login-form text-center border-none p-5">
+        <h2 class="h2 mb-4" th:text="Login"></h2>
+        <br/>
+        <div class="p-4 bg-white box-shadow">
+            <input type="text" id="email" name="email"  th:placeholder="Email"
+                   class="login-input form-control border-top-0 border-left-0 border-right-0 border-bottom rounded-0" /> <br/>
+            <input type="password"  th:placeholder="Password"
+                   id="password" name="password" class="login-input form-control border-top-0 border-left-0 border-right-0 border-bottom rounded-0" /> <br />
+            <div align="center" th:if="${param.error}">
+                <p class="d-flex text-12 text-non-valid">Email or Password invalid, please verify</p>
+            </div>
+            <button class="btn btn-block btn-register bg-black rounded-0 text-light mt-2" name="Submit" value="Login" type="Submit" th:text="Login"></button>
+        </div>
+    </form>
+
+</div>
+
+<div th:fragment="register-form">
+    <!--/*@thymesVar id="user" type="com.tinampiniari.thesisproject.data.model.User"*/-->
+    <form autocomplete="off" action="#" th:action="@{/register}" id="login"
+          th:object="${user}" method="post" class="register-form text-center border-0 p-5"
+          role="form">
+        <h2 class="h2 mb-4">Sign Up</h2>
+        <div class="alert-msg alert " th:classappend="${alert}">
+            <label class="validation-message" th:text="${successMessage}"></label>
+        </div>
+        <div class="p-4 bg-white box-shadow">
+            <input type="text" id="firstName" th:field="*{firstName}" placeholder="Name"
+                   class="reg-input form-control border-top-0 border-left-0 border-right-0 border-bottom rounded-0" />
+            <label th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                   class="validation-message d-flex text-12 text-non-valid"></label><br>
+            <input id="lastName" type="text" th:field="*{lastName}"
+                   placeholder="Last Name" class="reg-input form-control border-top-0 border-left-0 border-right-0 border-bottom rounded-0" />
+            <label	th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
+                      class="validation-message d-flex text-12 text-non-valid"></label><br>
+            <input id="email" type="email" th:field="*{email}" placeholder="Email"
+                   class="reg-input form-control border-top-0 border-left-0 border-right-0 border-bottom rounded-0" />
+            <label
+                    th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                    class="validation-message d-flex text-12 text-non-valid"></label><br>
+            <input id="password" type="password" th:field="*{password}"
+                   placeholder="Password" class="reg-input form-control border-top-0 border-left-0 border-right-0 border-bottom rounded-0" />
+            <label
+                    th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                    class="validation-message d-flex text-12 text-non-valid"></label>
+
+            <select th:field="*{role}" class="invisible">
+                <option th:value="1" th:text="User"></option>
+            </select>
+
+            <button type="submit" class="btn btn-block btn-register bg-black rounded-0 text-light mt-5">Sign Up</button>
+        </div>
+    </form>
+</div>
+
+
+<div th:fragment="search-form">
+    <div class="row text-center search-form-bg rounded-lg">
+        <div class="col pb-5">
+            <div class="m-4">
+
+                <!--/*@thymesVar id="city" type="com.tinampiniari.thesisproject.data.model.City"*/-->
+                <form action="javascript:;" onsubmit="loadCurrentWeather('city','city','country')" th:object="${city}" method="GET"
+                      class="form-inline my-2 my-lg-0 d-inline-block">
+                    <div>
+                        <label th:if="${#fields.hasErrors('city') || #fields.hasErrors('country')}" th:errors="*{city}"
+                               class="validation-message mt-4 text-non-valid justify-content-start"></label>
+                        <input
+                                class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-lg"
+                                type="search" placeholder="Your City Name" aria-label="Search" th:field="*{city}" id="city">
+                        <input
+                                class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-lg"
+                                type="search" placeholder="Your Country Name" aria-label="Search" th:field="*{country}"
+                                id="country">
+                    </div>
+                    <button class="btn btn-outline-search my-2 my-sm-0 w-100 rounded-pill" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-1 m-auto">
+            <p class="display-6">OR</p>
+        </div>
+        <div class="col">
+            <div class="p-5 m-4">
+                <button type="submit"  class="btn btn-search m-4" onclick="showlocation()" id="showLocation"/> Enable Location <i class="fa fa-location-arrow"></i></button>
+                <div id="display_loading"><img src="../images/spinner.gif" width="30px"></div>
+
+                <div>
+                    <!--/*@thymesVar id="city" type="com.tinampiniari.thesisproject.integration.ows.Coord"*/-->
+                    <form action="javascript:;" onsubmit="loadCurrentWeather('location','lat','lon')" th:object="${coord}" method="GET" class="form-inline my-2 my-lg-0 d-inline-block">
+                        <div>
+                            <input type="hidden" class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0"  placeholder="Lat" aria-label="Search" th:field="*{lat}" id="lat" value="1.0">
+                            <input type="hidden" class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0"  placeholder="Lon" aria-label="Search" th:field="*{lon}" id="lon">
+                        </div>
+                        <button class="btn btn-outline-search my-2 my-sm-0 w-100 rounded-pill" id="coords-btn" type="submit" style="display: none">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="footer :: scripts"></div>
+
+</body>
+</html>

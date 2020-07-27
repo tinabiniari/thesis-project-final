@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div class="col m-auto" style="background: #fff">
+    <h2 th:text="${cityCountry}"></h2>
+    <table class="table table-active text-center" th:each="element : ${listInfo}">
+        <thead>
+        <tr>
+            <th scope="col" th:text="${element.key}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="font-weight-bold">
+            <td>Hour</td>
+            <td>Weather</td>
+            <td>Feels Like</td>
+            <td>Humidity</td>
+            <td>Cloudiness</td>
+            <td>Wind Speed</td>
+            <td>Atmospheric Pressure</td>
+        </tr>
+        <tr th:each="elementValue : ${element.value}">
+            <td th:text="${#strings.substring(elementValue.dt_txt,11,16)}"></td>
+            <td class="d-flex align-items-end justify-content-center">
+                <p class="font-weight-bold" th:text="${#numbers.formatDecimal(elementValue.main.temp,1,0)}+ '°C'"></p>
+                <img th:src="${'http://openweathermap.org/img/wn/'+elementValue.weather[0].icon+'.png'}"></td>
+            <td th:text="${#numbers.formatDecimal(elementValue.main.feels_like,1,0)}+ '°C'"></td>
+            <td th:text="${elementValue.main.humidity}+ '%'"></td>
+            <td th:text="${elementValue.clouds.all}+ '%'"></td>
+            <td th:text="${elementValue.wind.speed}+ ' meter/sec'"></td>
+            <td th:text="${elementValue.main.pressure}+ ' hPa'"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<body>
+
+</body>
+</html>

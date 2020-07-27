@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:include="header :: head"></div>
+<body>
+<div th:include="header :: navbar"></div>
+<div class="container">
+        <div class="col-6 mt-4 p-5 bg-white rounded-lg m-auto">
+                <div class="index-block bg-transparent py-4">
+                        <h2 class="h2 p-3">My Profile</h2>
+                </div>
+                <div class="form-element" th:if="${user.firstName}">
+                        <!--/*@thymesVar id="firstName" type="com.tinampiniari.thesisproject.data.model.User"*/-->
+                        <label for="firstName">Name: </label>
+                        <p id="firstName" th:text="${user.firstName}"></p>
+                </div>
+                <div class="form-element" th:if="${user.lastName}">
+                        <label for="lastName">Last Name: </label>
+                        <p id="lastName" th:text="${user.lastName}"></p>
+                </div>
+                <div class="form-element" th:if="${user.email}">
+                        <label for="email">Email: </label>
+                        <p id="email" th:text="${user.email}"></p>
+                </div>
+                <div class="form-element" th:unless="${user.profile.streetAddress} eq ${emptyChar} or not ${user.profile.streetAddress}">
+                        <label for="streetAddress">Street Address: </label>
+                        <p id="streetAddress" th:text="${user.profile.streetAddress}"></p>
+                </div>
+                <div class="form-element" th:unless="${user.profile.city} eq ${emptyChar} or not ${user.profile.city}">
+                        <label for="city">City:</label>
+                        <p id="city" th:text="${user.profile.city}"></p>
+                </div>
+                <div class="form-element" th:unless="${user.profile.country} eq ${emptyChar} or not ${user.profile.country}">
+                        <label for="country">Country:</label>
+                        <p id="country" th:text="${user.profile.country}"></p>
+                </div>
+                <div class="form-element" th:unless="${user.profile.postalCode} eq ${emptyChar} or not ${user.profile.postalCode}">
+                        <label for="postalCode">Postal Code: </label>
+                        <p id="postalCode" th:text="${user.profile.postalCode}"></p>
+                </div>
+                <div class="form-element d-flex" th:if="${user.tags}">
+                        <label>My Article Tags: </label>
+                        <div class="tag-box" th:each="tag : ${tags}">
+                                <label style="font-size: 12px">
+                                        <input type="submit" class="tablinks mx-2" name="tags">
+                                        <span th:text="${tag.tagName}+'  &#10005;'"></span>
+                                </label>
+                        </div>
+                </div>
+                <div class="form-element" th:if="${user.profile.telephone} eq ${emptyChar} or not ${user.profile.telephone}">
+                        <label for="telephone">Telephone: </label>
+                        <!--/*@thymesVar id="profile" type="com.tinampiniari.thesisproject.data.model.Profile"*/-->
+                        <p id="telephone" th:text="${user.profile.telephone}"></p>
+                </div>
+
+                <div class="text-center pt-4">
+                        <form method="get" th:action="@{/editProfile}">
+                                <button type="submit" class="btn btn-edit w-100 text-grey">Edit</button>
+                        </form>
+                </div>
+        </div>
+</div>
+<script src="../js/getLocation.js" ></script>
+<script src="../js/chart.js" ></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</body>
+</html>

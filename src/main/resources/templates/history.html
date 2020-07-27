@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="../css/owfont-regular.min.css" rel="stylesheet" type="text/css">
+    <link href="../css/style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Weather Summary</title>
+</head>
+<body>
+<div th:include="header :: navbar"></div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.onload = function () {
+        var charts = /*[[${charts}]]*/ 'default';
+        var avgWeather = /*[[${avgWeather}]]*/'default';
+        var cityName = /*[[${cityName}]]*/'default';
+
+        charts.forEach(myFunction);
+
+        function myFunction(value, index, array) {
+            console.log(value);
+        }
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "dark2",
+            exportEnabled: true,
+            title: {
+                text: cityName
+            },
+            axisX:{
+                crosshair: {
+                    enabled: true,
+                    snapToDataPoint: true
+                }
+            },
+            axisY: {
+                suffix:" °C",
+                minimum:20,
+                maximum: 40,
+                gridThickness: 0,
+                includeZero: false
+            },
+            data: [{
+                name: "Temperature History",
+                type: "spline",
+                indexLabel: "{ y } °C" ,
+                showInLegend: true,
+                dataPoints: []
+            }]
+        });
+
+
+        /* Update dataPoints from AJAX and render the chart*/
+        chart.options.data[0].dataPoints = charts;
+        console.log(chart.name);
+        // console.log(avgWeather);
+        chart.render();
+
+    }
+    /*]]>*/
+</script>
+<!--Latitude: <p id="lat" th:field="*{lat}" th:value="${lat}" th:text="${lat}"></p><br/>-->
+
+<!--Longitude: <p id="lon" th:field="*{lon}" th:text="${lon}"></p>-->
+<div class="container">
+    <div class="index-block bg-transparent py-4">
+        <h2 class="h2 p-3">Weather History</h2>
+    </div>
+    <div class="col" th:text="${errorField}" th:classappend="${class}" th:style="${style}"></div>
+    <p class="p-3 bg-light">You can see the history of the temperatures for the last 10 days in any city. <br>Please fill in the city and the country you want to look for, or search by your current location</p>
+    <div class="row text-center search-form-bg rounded-lg mx-1">
+        <div class="col pb-5">
+            <div class="m-4">
+                <!--/*@thymesVar id="city" type="com.tinampiniari.thesisproject.data.model.City"*/-->
+                <form th:action="@{/history/city}" th:object="${city}" method="POST"
+                      class="form-inline my-2 my-lg-0 d-inline-block">
+                    <div>
+                        <label th:if="${#fields.hasErrors('city') || #fields.hasErrors('country')}" th:errors="*{city}"
+                               class="validation-message mt-4 text-non-valid justify-content-start"></label>
+                        <input
+                                class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-lg"
+                                type="search" placeholder="Your City Name" aria-label="Search" th:field="*{city}" id="city">
+                        <input
+                                class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-lg"
+                                type="search" placeholder="Your Country Name" aria-label="Search" th:field="*{country}"
+                                id="country">
+                    </div>
+                    <button class="btn btn-outline-search my-2 my-sm-0 w-100 rounded-pill" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-1 m-auto">
+            <p class="display-6">OR</p>
+        </div>
+        <div class="col">
+            <div class="p-5 m-4">
+                <button type="submit"  class="btn btn-search m-4" onclick="showlocation()" id="showLocation"/> Enable Location <i class="fa fa-location-arrow"></i></button>
+                <div id="display_loading"><img src="../images/spinner.gif" width="30px"></div>
+                <div>
+                    <!--/*@thymesVar id="city" type="com.tinampiniari.thesisproject.integration.ows.Coord"*/-->
+                    <form th:action="@{/history/location}" th:object="${coord}" method="POST" class="form-inline my-2 my-lg-0 d-inline-block">
+                        <div>
+                            <input type="hidden" class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0"  placeholder="Lat" aria-label="Search" th:field="*{lat}" id="lat" value="1.0">
+                            <input type="hidden" class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0"  placeholder="Lon" aria-label="Search" th:field="*{lon}" id="lon">
+                        </div>
+                        <button class="btn btn-outline-search my-2 my-sm-0 w-100 rounded-pill" id="coords-btn" type="submit" style="display: none">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col m-auto">
+            <ul class="list-group m-4">
+                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="../js/getLocation.js" ></script>
+<script src="../js/chart.js" ></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</body>
+</html>

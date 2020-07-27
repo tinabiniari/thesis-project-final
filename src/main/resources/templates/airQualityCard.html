@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<style>
+    /* Set the size of the div element that contains the map */
+    #map {
+        height: 400px;
+        /* The height is 400 pixels */
+        width: 100%;
+        /* The width is the width of the web page */
+    }
+</style>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var lat = /*[[${lat}]]*/ 'default';
+    var lon = /*[[${lon}]]*/'default';
+
+    // Initialize and add the map
+    function initMap() {
+        // The location of Uluru
+        var uluru = { lat: lat, lng: lon };
+        // The map, centered at Uluru
+        var map = new google.maps.Map(
+            document.getElementById('map'), { zoom: 4, center: uluru });
+        // The marker, positioned at Uluru
+        var marker = new google.maps.Marker({ position: uluru, map: map });
+
+    }
+    /*]]>*/
+
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFuRyEGVThQ-rl3kma9JZbLdZ8q7mLrZY&callback=initMap">
+</script>
+<body>
+<div class="col-8 m-auto">
+    <p class="h4" th:text="${failMessage}"></p>
+    <ul class="list-group m-4" style="background: #fff">
+        <li class="list-group-item text-center" th:each="entry : ${airVisual}" th:classappend="${entry.color}">
+            <div>
+                <p class="aqi" th:text="${entry.aqius} "></p><span>US AQI</span>
+                <p class="h4" th:text="${entry.city} + ',' + ${entry.country}"></p>
+            </div>
+            <div class="mt-4 p-3" style="background: #f6f3f3b0;">
+                <p class="font-weight-bold" th:text="${entry.title} "></p>
+                <p class="" th:text="${entry.description} "></p>
+            </div>
+        </li>
+    </ul>
+    <div id="map"></div>
+</div>
+</body>
+</html>

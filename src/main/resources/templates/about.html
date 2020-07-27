@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:include="header :: head"></div>
+<header><title>Weather</title></header>
+<body>
+<div>
+    <div th:include="header :: navbar"></div>
+
+    <div class="container">
+        <div class="index-block bg-transparent py-4">
+            <h2 class="h2 p-3" th:text="${title}"></h2>
+        </div>
+        <div class="col" id="errorField"></div>
+        <div class="p-3 bg-light">
+            <p>MyWeather is a web app, that informs you about the weather in your region!<br>
+        Our main functions are:
+            <ul>
+        <li>Current Weather</li>
+        <li>Forecast Weather</li>
+        <li>History Weather</li>
+        <li>Air Quality</li>
+        <li>Climate News</li>
+    </ul>
+        You can navigate through our top menu.
+            <br>If you are registered, you can have your own profile,save your favourite cities, and choose your favourite topics for the articles
+        </p>
+        </div>
+
+        </div>
+        <div class="row">
+            <div class="col" id="weatherCard"></div>
+        </div>
+    </div>
+    <div th:include="footer :: scripts"></div>
+</div>
+</body>
+</html>

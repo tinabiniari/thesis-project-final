@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:include="header :: head"></div>
+<header>
+    <title>Air Quality</title>
+</header>
+
+<body>
+<div th:include="header :: navbar"></div>
+
+
+<div class="container">
+    <div class="index-block bg-transparent py-4">
+        <h2 class="h2 p-3">Air Quality</h2>
+    </div>
+    <div class="col" id="errorField"></div>
+    <div class="col" th:text="${errorPageMessage}" th:classappend="${class}" th:style="${style}"></div>
+    <p class="p-3 bg-light">You can see the air quality in any city. <br>
+        Please fill in the city and the country you want to look for, or search by your current location</p>
+    <input type="hidden" name="predictionType" id="predictionType" value="air">
+    <div th:include="forms :: search-form"></div>
+    <div class="row">
+        <div class="col-4 mt-4 pl-4 pr-4 pb-4 bg-white rounded-lg">
+            <table class="table">
+                <caption class="caption-top text-center">Air pollution in largest cities in Greece</caption>
+                <thead>
+                <tr>
+                    <th scope="col">City</th>
+                    <th scope="col">AQI US</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry : ${largestCities}" th:classappend="${entry.color}">
+                    <td th:text="${entry.city} + ',' + ${entry.state}"></td>
+                    <td th:text="${entry.aqius}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div>
+                <div class="air-quality d-flex">
+                    <div class="air-info rounded"><p class="p-1 border rounded text-center"><span class="px-1 font-weight-bold"> 0 - 50 </span><br>Air quality is considered satisfactory, and air pollution poses little or no risk</p></div>
+                    <p class="air-quality-label font-weight-bold bg-green m-auto p-1 px-5 rounded">Good</p>
+                </div>
+                <div class="air-quality d-flex">
+                    <div class="air-info rounded"><p class="p-1 border rounded text-center"><span class="px-1 font-weight-bold"> 51 - 100 </span><br>Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.</p></div>
+                    <p class="air-quality-label font-weight-bold bg-yellow m-auto p-1 px-5 rounded">Moderate
+                    </p>
+
+
+                </div>
+                <div class="air-quality d-flex">
+                    <div class="air-info rounded"><p class="p-1 border rounded text-center"><span class="px-1 font-weight-bold"> 101 - 150 </span><br>Members of sensitive groups may experience health effects. The general public is not likely to be affected.</p></div>
+                    <p class="air-quality-label font-weight-bold bg-orange m-auto p-1 px-5 rounded">Unhealthy for sensitive groups
+                    </p>
+
+                </div>
+                <div class="air-quality d-flex">
+                    <div class="air-info rounded"><p class="p-1 border rounded text-center"><span class="px-1 font-weight-bold"> 151 - 200 </span><br>Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects</p></div>
+                    <p class="air-quality-label font-weight-bold bg-deep-orange m-auto p-1 px-5 rounded">Unhealthy
+                    </p>
+
+                </div>
+                <div class="air-quality d-flex">
+                    <div class="air-info rounded"><p class="p-1 border rounded text-center"><span class="px-1 font-weight-bold"> 201 - 300 </span><br>Health warnings of emergency conditions. The entire population is more likely to be affected.</p></div>
+                    <p class="air-quality-label font-weight-bold bg-red m-auto p-1 px-5 rounded">Very unhealthy
+                    </p>
+                </div>
+                <div class="air-quality d-flex">
+                    <div class="air-info rounded"><p class="p-1 border rounded text-center"><span class="px-1 font-weight-bold"> 301 +  </span><br>Health alert: everyone may experience more serious health effects.</p></div>
+                    <p class="air-quality-label font-weight-bold bg-deep-red m-auto p-1 px-5 rounded">Hazardous
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col" id="weatherCard"></div>
+    </div>
+    <div th:include="footer :: scripts"></div>
+
+</body>
+</html>

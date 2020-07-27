@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="../css/owfont-regular.min.css" rel="stylesheet" type="text/css">
+    <link href="../css/style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Weather Summary</title>
+</head>
+<body>
+<div th:include="header :: navbar"></div>
+<h1 class="text-center">Welcome to MyWeather</h1>
+<div class="container">
+    <div class="row text-center">
+        <div class="col">
+            <!--/*@thymesVar id="city" type="com.tinampiniari.thesisproject.data.model.City"*/-->
+            <form th:action="@{/current/city}" th:object="${city}" method="GET" class="form-inline my-2 my-lg-0 d-inline-block">
+                <div>
+                    <input class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0" type="search" placeholder="Your City Name" aria-label="Search" th:field="*{city}" id="city">
+                    <input class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0" type="search" placeholder="Your Country Name" aria-label="Search" th:field="*{country}" id="country">
+                    <label	th:if="${#fields.hasErrors('city') || #fields.hasErrors('country')}" th:errors="*{city}"
+                              class="validation-message"></label>
+                </div>
+                <button class="btn btn-outline-success my-2 my-sm-0 w-100" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 m-auto">
+            <ul class="list-group m-4">
+                <li class="list-group-item text-center weather-summary" th:each="mycity : ${cityList}">
+                    <div>
+                        <p class="h4" th:text="${mycity.name} + ',' + ${mycity.sys.country}"></p>
+                        <p class="h5 text-capitalize" th:text="${currentDate}"></p>
+                        <img th:src="${iconLink}" alt="Weather Icon">
+                        <p class="h4" th:text="${mycity.main.temp}+ '°C'"></p>
+                        <p class="h4" th:text="${mycity.weather[0].main}"></p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="js/getLocation.js" ></script>
+
+</body>
+</html>

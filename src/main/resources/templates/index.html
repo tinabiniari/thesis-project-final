@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:include="header :: head"></div>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <script>
+
+        function loadLoc() {
+            function call(position) {
+                document.getElementById('lat').value = position.coords.latitude;
+                document.getElementById('lon').value = position.coords.longitude;
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+            }
+
+            var mylat = document.getElementById('lat').value;
+            var mylon = document.getElementById('lon').value;
+
+
+            navigator.geolocation.getCurrentPosition(call);
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("demo").innerHTML = this.responseText;
+                }
+            };
+            document.getElementById("display_loading").style.display = "block";
+
+            setTimeout(function() {
+                xhttp.open("GET", "/current/location?lat="+document.getElementById('lat').value+"&lon="+document.getElementById('lon').value, true);
+                xhttp.send();
+                document.getElementById("display_loading").style.display = "block";
+                if(document.getElementById("display_loading").style.display == "block"){
+                    document.getElementById("display_loading").style.display = "none";
+                }
+
+            }, 5000)
+
+            var savedCitiesRequest = new XMLHttpRequest();
+            savedCitiesRequest.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("savedCities").innerHTML = this.responseText;
+                }
+            };
+
+            savedCitiesRequest.open("GET", "/savedCitiesCard", true);
+            savedCitiesRequest.send();
+        }
+
+        function openArticle(evt, tagIndex) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tagIndex).style.display = "contents";
+            evt.currentTarget.className += " active";
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+
+    </script>
+</head>
+
+<body onload="loadLoc()">
+<div th:include="header :: navbar"></div>
+<div class="container">
+    <div id="display_loading" class="text-center"><img src="../images/spinner.gif" width="30px"></div>
+    <!--/*@thymesVar id="message" type="com.tinampiniari.thesisproject.web.controller.CurrentController"*/-->
+    <!--    <p th:text="${message}"></p>-->
+    <p id="demo"></p>
+
+    <div class="container index-block p-5 my-5">
+        <h2 class="p-2">Climate News</h2>
+        <div class="d-flex p-2" sec:authorize="isAuthenticated()">
+            <label class="mt-1">My Tags: </label>
+            <div class="tag-box mx-2" th:each="tag,i: ${tags}">
+                <label>
+                    <input type="radio" class="tablinks mx-2" name="tags" th:onclick="|openArticle(event,[[${i.index}]])|" th:attrappend="class=${i.index == 0 ? 'active' : ''}" >
+                    <span class="px-2" th:text="${tag.tagName}+'  &#10005;'"></span>
+                </label>
+            </div>
+        </div>
+        <div class="row">
+
+            <div th:each="article,i : ${articlePage}" th:id="${i.index}" class="tabcontent" th:attrappend="style=${i.index == 0 ? 'display:contents;' : 'display:none;'}">
+                <th:block th:each="art, iStat : ${article.value.content}">
+                    <div class="article-sub-block m-1">
+                        <div class="wrapper">
+                            <div class="image"><img class="img-fluid pt-1" th:src="${art.urlToImage}">
+                                <h5 class="article-title font-weight-bold" th:text="${art.title}"></h5>
+                                <div class="text">
+                                    <th:block th:text="${art.description}"></th:block><br>
+                                    <a class="article-link rounded" th:href="${art.url}" target="_blank">Read more..</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+        <form method="GET" th:action="@{/articles}">
+            <button type="submit" class="btn btn-register bg-purple w-100 p-2 text-light mt-5">More articles..</button>
+        </form>
+    </div>
+    <input type="hidden" class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0"  placeholder="Lat" aria-label="Search" name="lat" id="lat" th:value="${lat}">
+    <input type="hidden" class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0"  placeholder="Lon" aria-label="Search" name="lon" id="lon" th:value="${lon}">
+    <div sec:authorize="isAuthenticated()" class="container d-inline-block index-block p-5 my-5">
+        <h2 class="p-2">My Saved Cities</h2>
+        <div class="row">
+            <div id="savedCities"></div>
+        </div>
+        <form method="GET" th:action="@{/savedCities}">
+            <button type="submit" class="btn btn-register bg-purple w-100 p-2 text-light mt-5">Edit your saved cities</button>
+        </form>
+
+
+
+    </div>
+</div>
+
+<div th:include="footer :: scripts"></div>
+</body>
+</html>

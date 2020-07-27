@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:include="header :: head"></div>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+
+<div class="d-flex" th:fragment="current-weather">
+    <div class="col m-auto pl-0">
+        <ul class="list-group mt-4 mb-4">
+            <li class="list-group-item text-center weather-summary d-flex" th:each="mycity : ${cityList}">
+                <div class="col">
+                    <p class="h2" th:text="${mycity.name} + ',' + ${mycity.sys.country}"></p>
+                    <p class=" text-capitalize" th:text="${currentDate}"></p>
+                    <img th:src="${iconLink}" alt="Weather Icon">
+                    <p class="h1" th:text="${#numbers.formatDecimal(mycity.main.temp,1,0)}+ '°C'"></p>
+                    <div class="d-inline-flex h5"><i class="fa fa-thermometer-half px-2 py-1" aria-hidden="true"></i>
+                        <p th:text="'Feels like: ' +${#numbers.formatDecimal(mycity.main.feels_like,1,0)}+ '°C'"></p></div>
+                    <p class="h4" th:text="${mycity.weather[0].main}"></p>
+
+                </div>
+                <div class="col-5 mx-4">
+                    <div class="current-sub-card">
+                        <div class="d-flex"><p class="mb-0 pr-2" th:text="'Min: '+ ${#numbers.formatDecimal(mycity.main.temp_min,1,0)}+ '°C'"></p><i style="font-size: 25px;color:#d3fff0;" class="fas fa-angle-down"></i></div>
+                        <div class="d-flex"><p class="mb-0 pr-2" th:text="'Max: '+ ${#numbers.formatDecimal(mycity.main.temp_max,1,0)}+ '°C'"></p><i style="font-size: 25px;color:#d3fff0;" class="fas fa-angle-up"></i></div>
+                    </div>
+                    <div class="d-flex pl-3"><i class="fas fa-tint pt-3"></i><p class="current-sub-card">Humidity: <span class="pl-3" th:text="${mycity.main.humidity}+ '%'"></span></p></div>
+                    <div class="d-flex pl-3"><i class="fas fa-wind pt-3"></i><p class="current-sub-card text-nowrap">Wind Speed: <span class="pl-3" th:text="${mycity.wind.speed}+ ' meter/sec'"></span></p></div>
+                    <div class="d-flex pl-3"><i class="fa fa-tachometer pt-3"></i><p class="current-sub-card text-nowrap">Pressure: <span class="pl-3" th:text="${mycity.main.pressure}+ ' hPa'"></span></p></div>
+                    <div sec:authorize="isAuthenticated()">
+                        <!--                        <form th:action="@{/current/save/${mycity.coord.lat}/${mycity.coord.lon}}" method="POST" class="form-inline my-2 my-lg-0 d-inline-block">-->
+                        <div style="width: fit-content;">
+                            <input type="hidden" id="lat" name="lat" th:value="${mycity.coord.lat}">
+                            <input type="hidden" id="lon" name="lon" th:value="${mycity.coord.lon}">
+                            <input type="hidden" name="cityName" th:value="${mycity.name}">
+                            <button class="btn btn-add my-2 my-sm-0 w-100 rounded-pill" id="saveCity" th:onclick="|addToSavedCities(${mycity.coord.lat},${mycity.coord.lon})|"><i class="fas fa-plus"></i> Add to my cities</button>
+                            <div class="d-flex mt-2 text-nowrap">
+                                <button class="btn btn-add my-2 my-sm-0 w-100 rounded-pill" data-toggle="modal" data-target=".bd-example-modal-lg" onclick="forecastWeatherFunction()">Forecast</button>
+                                <button class="btn btn-add my-2 my-sm-0 w-100 rounded-pill" data-toggle="modal" data-target=".bd-example-modal-lg" onclick="airQualityFunction()">Air Quality</button>
+                            </div>
+                        </div>
+                        <!--                        </form>-->
+                    </div>
+                    <p id="cityStatus"></p>
+                </div>
+
+            </li>
+            <div class="modal fade bd-example-modal-lg mt-5" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="">
+                        <p id="modalBox"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="chartModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">CanvasJS Chart within Bootstrap Modal</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div id="chartContainer" style="height: 360px; width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </ul>
+    </div>
+
+    <div class="col-4 mt-4 mb-4 ml-4 bg-white rounded-20" th:if="${namesOfDays}">
+        <div class="row justify-content-center pt-2"><h2>4-day Forecast</h2></div>
+        <div class="row">
+            <div class="col-6 m-auto">
+                <ul class="list-group no-style-list m-4">
+                    <li class="text-center" th:each="name : ${namesOfDays}">
+                        <p th:text="${name}"></p>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-6 m-auto">
+                <ul class="list-group no-style-list m-4">
+                    <li class="text-center"th:each="elemnt : ${fourDay}">
+                        <p class="temp-text" th:text="${#numbers.formatDecimal(elemnt.value,1,0)}+ ' °C'"></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="footer :: scripts"></div>
+
+</body>
+</html>

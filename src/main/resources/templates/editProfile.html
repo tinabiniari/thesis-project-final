@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:include="header :: head"></div>
+<body>
+<div th:include="header :: navbar"></div>
+<div class="container">
+
+    <h1>My Profile</h1>
+    <!--/*@thymesVar id="profile" type="com.tinampiniari.thesisproject.data.model.Profile"*/-->
+    <!--/*@thymesVar id="user" type="com.tinampiniari.thesisproject.data.model.User"*/-->
+    <!--/*@thymesVar id="tags" type="com.tinampiniari.thesisproject.data.model.Tags"*/-->
+
+    <form method="POST" th:action="@{/editProfile}" th:object="${profile}" class="register-form text-center border-0 p-5">
+        <div class="p-4 bg-white col m-auto rounded-10">
+            <input id="userId" name="userId" th:value="${user.userId}" type="hidden" class="form-control border-top-0 border-left-0 border-right-0 border-bottom rounded-0" /> <br/>
+            <div class="info">
+                <h2>Basic Info</h2>
+                <div class="form-edit-element">
+                    <div class="form-edit-element">
+                        <label>Name</label>
+                        <input id="firstName" name="firstName" th:value="${user.firstName}" class="form-control border-0 rounded-0 bg-light" /> <br/>
+                    </div>
+                    <div class="form-edit-element">
+                        <label>Last Name</label>
+                        <input id="lastName" name="lastName" th:value="${user.lastName}" class="form-control border-0 rounded-0 bg-light" /> <br/>
+                    </div>
+                </div>
+                <div class="form-edit-element">
+                    <div class="form-edit-element">
+                        <label>Telephone</label>
+                        <input id="telephone" name="telephone" th:value="${profile.telephone}" class="form-control border-0 rounded-0 bg-light" /> <br/>
+                        <label th:if="${#fields.hasErrors('telephone')}" th:errors="*{telephone}"
+                               class="validation-message d-flex text-12 text-non-valid"></label><br></div>
+
+                </div>
+                <div class="form-edit-element ml-5 mb">
+                </div>
+            </div>
+            <div class="info">
+                <h2>Address Info</h2>
+                <div class="form-edit-element">
+                    <label>Street Address</label>
+                    <input id="streetAddress" name="streetAddress" th:value="${profile.streetAddress}" class="form-control border-0 rounded-0 bg-light" /> <br/>
+                    <label>City</label>
+                    <input id="city" name="city" th:value="${profile.city}" class="form-control border-0 rounded-0 bg-light" /> <br/>
+                </div>
+                <div class="form-edit-element">
+                    <label>Postal Code</label>
+                    <input id="postalCode" name="postalCode" th:value="${profile.postalCode}" class="form-control border-0 rounded-0 bg-light" /> <br/>
+                    <label th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"
+                           class="validation-message d-flex text-12 text-non-valid"></label><br>
+                    <label>Country</label>
+                    <input id="country" name="country" th:value="${profile.country}" class="form-control border-0 rounded-0 bg-light" /> <br/>
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-register bg-purple w-50 p-2 rounded-pill text-light mt-2">Submit changes</button>
+        </div>
+        <h2 th:text="${success}"></h2>
+
+    </form>
+
+
+</div>
+
+</body>
+</html>

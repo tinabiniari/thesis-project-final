@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+
+
+<div class="d-flex" th:fragment="saved-cities">
+    <div class="main-block d-flex">
+
+        <th:block th:each="mycity,i : ${myCities}">
+
+            <div class="sub-block saved-card" th:each="mycityValue : ${mycity.value}" th:classappend="${col}">
+
+                <ul class="list-group mt-4 mb-4">
+                    <!--/*@thymesVar id="myCities" type=""*/-->
+                    <li class="list-group-item text-center saved-city">
+
+                        <div class="delete-city-button text-center position-relative d-none mb-2" id="delete-city-button">
+                            <form th:action="@{/deleteCity/__${mycity.key}__}" method="POST">
+                                <input  type="hidden" class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0"  placeholder="Lat" aria-label="Search" name="cityId" id="cityId" th:value="${mycity.key}">
+                                <input  type="hidden" class="form-control mr-sm-2 mt-4 mb-4 border-top-0 border-left-0 border-right-0 border-bottom rounded-0"  placeholder="Lat" aria-label="Search" name="cityName" id="cityName" th:value="${mycityValue.name}">
+                                <button class="text-center btn btn-add my-2 my-sm-0 rounded-pill" style="width:50%;"  type="submit" value="">
+                                    <i class="fa fa-minus-circle px-2" aria-hidden="true"></i>Delete
+                                </button>
+
+
+                            </form>
+                        </div>
+
+                        <p class="h2" th:text="${mycityValue.name} + ',' + ${mycityValue.sys.country}"></p>
+                        <p class=" text-capitalize" th:text="${currentDate}"></p>
+                        <img th:src="${'http://openweathermap.org/img/wn/'+mycityValue.weather[0].icon+'@2x.png'}">
+                        <p class="h1" th:text="${#numbers.formatDecimal(mycityValue.main.temp,1,0)}+ '°C'"></p>
+                        <p class="h4" th:text="${mycityValue.weather[0].main}"></p>
+                        <input type="hidden" th:value="${mycityValue.coord.lat}" id="lat" name="lat">
+                        <input type="hidden" th:value="${mycityValue.coord.lon}" id="lon" name="lon">
+                        <div class="d-flex mt-2 text-nowrap">
+                            <button class="btn btn-add my-2 my-sm-0 w-100 rounded-pill" data-toggle="modal" data-target=".bd-example-modal-lg" onclick="forecastWeatherFunction()">Forecast</button>
+                            <button class="btn btn-add my-2 my-sm-0 w-100 rounded-pill" data-toggle="modal" data-target=".bd-example-modal-lg" onclick="airQualityFunction()">Air Quality</button>
+                        </div>
+                    </li>
+                </ul>
+                <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content p-4">
+                            <p id="modalBox"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </th:block>
+        <div class="sub-block saved-card mx-1 mt-4 mb-4 add-city-block" style="height: 342px;" th:classappend="${col}">
+            <div>
+                <form th:action="@{/current}" method="GET">
+                    <button type="submit" class="btn btn-outline-search rounded">
+                        <i class="fa fa-plus-circle p-2" aria-hidden="true"></i>Add City
+
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="footer :: scripts"></div>
+</body>
+</html>

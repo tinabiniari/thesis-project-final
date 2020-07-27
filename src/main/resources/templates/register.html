@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registration Form</title>
+</head>
+<div th:include="header :: head"></div>
+<body class="reg-body">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.tag-checkbox').on('change', function() {
+            if($('.tag-checkbox:checked').length > 4) {
+                this.checked = false;
+            }
+        });
+    });
+
+</script>
+<div class="container">
+    <div class="bg m-5 mt-2 mb-4 position-static">
+        <div class="col-5 tabs position-absolute">
+            <ul class="nav flex-column nav-pills nav-fill mb-1 w-50 ml-5" id="pills-tab" role="tablist">
+                <li class="nav-item pb-4 register-title"><h1>Unipi Weather</h1></li>
+                        <li class="nav-item pb-4"> <a class="nav-link tabs-register rounded-pill"  id="pills-signin-tab" data-toggle="pill" href="#pills-signin"
+                                role="tab" aria-controls="pills-signin" aria-selected="true">Sign In</a> </li>
+                        <li class="nav-item pb-4"> <a class="nav-link tabs-register rounded-pill" id="pills-signup-tab" data-toggle="pill" href="#pills-signup" role="tab"
+                                aria-controls="pills-signup" aria-selected="false">Sign Up</a> </li>
+                    </ul>
+        </div>
+    <div class="form-bg col mr-auto border shadow rounded p-0 h-6">
+        <div class="background-signup col-7 ml-auto p-0 h-6 rounded-right">
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade" th:classappend="${param.error} ? 'show active' : ${active}" id="pills-signin" role="tabpanel" aria-labelledby="pills-signin-tab">
+                <div class="col-sm-12 pt-2">
+                    <form th:action="@{/login}" id="signinFrom" method="POST" class="login-form text-center border-none pt-pb-25">
+                        <h2 class="h2 mb-4 text-purple font-weight-bold">Sign In</h2>
+                        <div class="p-4 bg-white">
+                            <div class="input-wrap">
+                                    <i class="fa fa-envelope icon"></i>
+                                    <input type="text" id="email" name="email"  placeholder="Email"
+                                   class="login-input form-control border-0 rounded-0 bg-light" /> 
+                                    <br/>
+                                </div>
+                                <div class="input-wrap">
+                                    <i class="fa fa-key icon"></i>
+                                    <input type="password"  th:placeholder="Password"
+                                    id="password" name="password" class="login-input form-control border-0 rounded-0 bg-light" /> <br />
+                                    </div>
+
+                                   <div align="center" th:if="${param.error}">
+                                <p class="d-flex text-12 text-non-valid">Email or Password invalid, please verify</p>
+                            </div>
+                            <button class="btn btn-register bg-purple w-50 p-2 rounded-pill text-light mt-2" name="Submit" value="Login" type="Submit" th:text="Login"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" th:classappend="${show}" id="pills-signup" role="tabpanel" aria-labelledby="pills-signup-tab">
+                <div class="col-sm-12 pt-2">
+                    <!--/*@thymesVar id="user" type="com.tinampiniari.thesisproject.data.model.User"*/-->
+                    <form autocomplete="off" action="#" th:action="@{/register}" id="signupFrom"
+                          th:object="${user}" method="post" class="register-form text-center border-0 p-5"
+                          role="form">
+                        <h2 class="h2 mb-4 text-purple font-weight-bold">Register</h2>
+                        <div class="alert-msg alert " th:classappend="${labelClass}">
+                            <i class="fa fa-check-circle-o d-none" th:classappend="${iClass}" aria-hidden="true" style=""></i><label class="validation-message" th:text="${successMessage}"></label>
+                        </div>
+                        <div class="p-4 bg-white">
+                            <div class="input-wrap">
+                                <i class="fa fa-user icon"></i>
+                            <input type="text" id="firstName" th:field="*{firstName}" placeholder="Name"
+                                   class="reg-input form-control border-0 rounded-0 bg-light"/>
+                            </div>
+                            <label th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                                   class="validation-message d-flex text-12 text-non-valid"></label><br>
+                            <div class="input-wrap">
+                            <i class="fa fa-user icon"></i>
+                            <input id="lastName" type="text" th:field="*{lastName}"
+                                   placeholder="Last Name" class="reg-input form-control border-0 rounded-0 bg-light" />
+                            </div>
+                            <label	th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
+                                      class="validation-message d-flex text-12 text-non-valid"></label><br>
+                            <div class="input-wrap">
+                            <i class="fa fa-envelope icon"></i>
+                            <input id="email" type="email" th:field="*{email}" placeholder="Email"
+                                   class="reg-input form-control border-top-0 border-0 rounded-0 bg-light" />
+                            </div>
+                            <label
+                                    th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                                    class="validation-message d-flex text-12 text-non-valid"></label><br>
+                            <div class="input-wrap">
+                            <i class="fa fa-key icon"></i>
+                            <input id="password" type="password" th:field="*{password}"
+                                   placeholder="Password" class="reg-input form-control border-top-0 border-0 rounded-0 bg-light" />
+                                   </div>
+                            <label
+                                    th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                                    class="validation-message d-flex text-12 text-non-valid"></label>
+
+                            <select th:field="*{role}" class="invisible">
+                                <option th:value="1" th:text="User"></option>
+                            </select>
+                            <label
+                                    class="validation-message d-flex text-12 text-non-valid" th:text="${nullTag}"></label>
+                            <label class="d-flex">Please choose your favourite tags.<br> Choose up to 4 tags to continue.</label>
+                            <div class="tag-box" th:each="tag : ${tags}">
+                                <label><input class="tag-checkbox" type="checkbox" name="checkedTags" th:value="${tag.id}"/><span th:text="'#'+${tag.tagName}"></span></label>
+                            </div>
+                            <button type="submit" class="btn btn-register bg-purple w-50 p-2 rounded-pill text-light mt-2">Sign Up</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+<div th:include="footer :: scripts"></div>
+</body>
+</html>
